@@ -23,7 +23,7 @@ public:
         this->updateDom();
         // TODO debugging
         // this->print();
-        this->arcConst();
+        //this->arcConst();
     }
 
     // Updates domain of initial sudoku for all variables
@@ -158,20 +158,26 @@ public:
 
    void print() {
        for (int i = 0; i < ROWS; i++) {
+           if (i == 3 || i == 6)
+               cout << "---------------------------------------\n";
            for (int j = 0; j < COLS; j++) {
+               if (this->matrix[i][j].getValue() == 0) {
+                   cout << "| * ";
+                   continue;
+               }
                cout << "| " << this->matrix[i][j].getValue() << " ";
            }
-           cout << "|\n";
+          cout << "|\n";
        }
 
        // TODO debugging
-       for (int i = 0; i < ROWS; i++) {
-           for (int j = 0; j < COLS; j++) {
-               cout << i << "," << j << ": ";
-               this->matrix[i][j].printDomain();
-              cout << endl;
-           }
-           cout << "\n";
-       }
+       //for (int i = 0; i < ROWS; i++) {
+       //    for (int j = 0; j < COLS; j++) {
+       //        cout << i << "," << j << ": ";
+       //        this->matrix[i][j].printDomain();
+       //       cout << endl;
+       //    }
+       //    cout << "\n";
+       //}
    }
 };
