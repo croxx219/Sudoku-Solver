@@ -26,6 +26,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="SLinkedList.h" />
     <ClInclude Include="Sudoku.h" />
+    <ClInclude Include="Variable.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
