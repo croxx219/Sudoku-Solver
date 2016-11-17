@@ -24,56 +24,9 @@ class Sudoku {
 private:
 	Type matrix[ROWS][COLS];    // Matrix that holds Sudoku, empty space is 0
 public:
-	Sudoku() {
-		string filename;
-		cout << "\nPlease enter file name: ";
-		cin >> filename;
-		cout << endl;
-		this->readFile(filename);
-		this->print();
-	}
-
-	void readFile(string input) {
-		string line;
-		ifstream myfile(input);
-		if (myfile.is_open())
-		{
-			// Reading sudoku from CSV file
-			for (int r = 0; r<ROWS; r++)
-			{
-				// Reads a line at a time
-				getline(myfile, line);
-				for (int c = 0; c < COLS; c++) {
-					int pos = (int)line.find(',');
-					string data = line.substr(0, pos); // First value found
-					// cout << data << endl;              // TODO debug
-					line = line.substr(pos + 1);         // Trim the read line to start after first comma
-					// cout << line << endl;              // TODO debug
-					int value = stoi(data);
-					matrix[r][c] = value;
-
-				}
-			}
-			// changing pointer position to be read to the beggining of the file
-			myfile.close();
-
-		}
-
-		else
-		{
-			cout << "Unable to open file";
-		}
-	}
-
-	void print() {
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLS; j++) {
-				cout << "| " << this->matrix[i][j] << " ";
-			}
-			cout << "|\n";
-		}
-	}
-
+	Sudoku(string filename);
+	void readFile(string input);
+	void print();
 	bool IsFinished();
 	void RemainingNumbers(unsigned int block, int row, int col, CyclicList<int> &t);
 	void GetIncompatibleNumbers(unsigned int row, unsigned int column, CyclicList<int> &t);
@@ -83,7 +36,66 @@ public:
 	bool Track();
 };
 
-template<class T> void Sudoku<T>::GetIncompatibleNumbers(unsigned int row, unsigned int col, CyclicList<int> &tar)
+template<class T>
+Sudoku<T>::Sudoku(string filename) {
+	cout << endl;
+	this->readFile(filename);
+	this->print();
+}
+
+template<class T>
+void Sudoku<T>::readFile(string input) {
+	string line;
+	ifstream myfile(input);
+	if (myfile.is_open())
+	{
+		// Reading sudoku from CSV file
+		for (int r = 0; r<ROWS; r++)
+		{
+			// Reads a line at a time
+			getline(myfile, line);
+			for (int c = 0; c < COLS; c++) {
+				int pos = (int)line.find(',');
+				string data = line.substr(0, pos); // First value found
+				// cout << data << endl;              // TODO debug
+				line = line.substr(pos + 1);         // Trim the read line to start after first comma
+				// cout << line << endl;              // TODO debug
+				int value = stoi(data);
+				matrix[r][c] = value;
+
+			}
+		}
+		// changing pointer position to be read to the beggining of the file
+		myfile.close();
+
+	}
+
+	else
+	{
+
+		cout << "Unable to open file";
+		throw 0;
+	}
+}
+template<class T>
+void Sudoku<T>::print() {
+	for (int i = 0; i < ROWS; i++) {
+		if(i == 3 || i==6){
+			cout << "-------------------------------\n";
+		}
+		for (int j = 0; j < COLS; j++) {
+			if(j==0 || j== 6 || j == 3)
+				cout << "|";
+			if(this->matrix[i][j] == 0)
+				cout << " * ";
+			else
+				cout << " " << this->matrix[i][j] << " ";
+		}
+		cout << "|\n";
+	}
+}
+template<class T>
+void Sudoku<T>::GetIncompatibleNumbers(unsigned int row, unsigned int col, CyclicList<int> &tar)
 {
 	CyclicList<int> numList;
 
@@ -102,7 +114,8 @@ template<class T> void Sudoku<T>::GetIncompatibleNumbers(unsigned int row, unsig
 	tar.TransferList(numList);
 }
 
-template<class T> unsigned int Sudoku<T>::GetBlockFromCoord(int i, int j)
+template<class T>
+unsigned int Sudoku<T>::GetBlockFromCoord(int i, int j)
 {
 	if (i < 3)
 	{
@@ -141,7 +154,8 @@ template<class T> unsigned int Sudoku<T>::GetBlockFromCoord(int i, int j)
 	return 9;
 }
 
-template<class T> bool Sudoku<T>::Track()
+template<class T>
+bool Sudoku<T>::Track()
 {
 	if (IsFinished()) //check if finished
 	{
@@ -165,7 +179,7 @@ template<class T> bool Sudoku<T>::Track()
 	for (int i = 0; i < varList.GetSize(); i++)
 	{
 		matrix[loc.x][loc.y] = varList.GetNthNodeData(i);
-		
+
 		if (Track())
 			return true;
 
@@ -175,7 +189,8 @@ template<class T> bool Sudoku<T>::Track()
 	return false;
 }
 
-template<class T> coord Sudoku<T>::CheckConflict(unsigned int number, unsigned int block, unsigned int row, unsigned int column)
+template<class T>
+coord Sudoku<T>::CheckConflict(unsigned int number, unsigned int block, unsigned int row, unsigned int column)
 {
 	if (number > 9)
 		return coord(-1, -1);
@@ -184,7 +199,7 @@ template<class T> coord Sudoku<T>::CheckConflict(unsigned int number, unsigned i
 	unsigned int c;
 
 	GetBlockStart(block, r, c);
-	
+
 	for (unsigned int i = r, j = c, counter = 0; counter < 9; i++, j++, counter++)
 	{
 		if (matrix[i][j] == number)
@@ -212,11 +227,12 @@ template<class T> coord Sudoku<T>::CheckConflict(unsigned int number, unsigned i
 	return coord(9, 9);
 }
 
-template<class T> void Sudoku<T>::GetBlockStart(unsigned int block, unsigned int &row, unsigned int &column)
+template<class T>
+void Sudoku<T>::GetBlockStart(unsigned int block, unsigned int &row, unsigned int &column)
 {
 	if (block > 8)
 		row = column = 9;
-	
+
 	switch (block)
 	{
 	case 0:
@@ -258,7 +274,8 @@ template<class T> void Sudoku<T>::GetBlockStart(unsigned int block, unsigned int
 	}
 }
 
-template<class T> bool Sudoku<T>::IsFinished()
+template<class T>
+bool Sudoku<T>::IsFinished()
 {
 	for (int i = 0; i < ROWS; i++)
 		for (int j = 0; j < COLS; j++)
@@ -268,7 +285,8 @@ template<class T> bool Sudoku<T>::IsFinished()
 	return true;
 }
 
-template<class T> void Sudoku<T>::RemainingNumbers(unsigned int block, int row, int col, CyclicList<int> &tar)
+template<class T>
+void Sudoku<T>::RemainingNumbers(unsigned int block, int row, int col, CyclicList<int> &tar)
 {
 	CyclicList<int> numlist;
 
@@ -312,7 +330,6 @@ template<class T> void Sudoku<T>::RemainingNumbers(unsigned int block, int row, 
 		if (row != i && matrix[i][col] > 0)
 			numlist.erase(matrix[i][col], true);
 	}
-	
+
 	tar.TransferList(numlist);
 }
-
